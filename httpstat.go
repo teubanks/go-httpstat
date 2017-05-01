@@ -79,7 +79,12 @@ func (r *Result) ContentTransfer(t time.Time) time.Duration {
 // It is from dns lookup start time to the given time. The
 // time must be time after read body (go-httpstat can not detect that time).
 func (r *Result) Total(t time.Time) time.Duration {
-	return t.Sub(r.t0)
+	// t0 is from previous versions of httpstat
+	if r.t0.IsZero() {
+		return t.Sub(r.dnsStart)
+	} else {
+		return t.Sub(r.t0)
+	}
 }
 
 // Format formats stats result.
